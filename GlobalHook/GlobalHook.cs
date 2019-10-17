@@ -15,7 +15,7 @@ namespace GlobalHook
 
 			{
 				HookId=NativeMethods.SetWindowsHookEx((int)hookType, hookProc,
-					NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+					NativeMethods.GetModuleHandle(curModule?.ModuleName), 0);
 			}
 
 			return HookId;

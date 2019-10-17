@@ -93,7 +93,7 @@ namespace GlobalHook
 
 		public static void StartListening()
         {
-            while (!NativeMethods.GetMessage(out NativeMethods.MSG msg, IntPtr.Zero, 0, 0))
+            while (!NativeMethods.GetMessage(out MSG msg, IntPtr.Zero, 0, 0))
             {
                 NativeMethods.TranslateMessage(ref msg);
                 NativeMethods.DispatchMessage(ref msg);
