@@ -28,6 +28,7 @@ namespace GlobalHook.Keyboard
     {
 
 		public static event EventHandler<KeyEventsArgs> OnKeyPress;
+		public static event EventHandler<KeyEventsArgs> OnEscapePress; 
 
 		public static IntPtr SetHook() =>
 			SetHook(HookType.WH_KEYBOARD_LL, HookProc);
