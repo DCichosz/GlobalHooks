@@ -4,7 +4,7 @@
  * var lnkFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Notepad.lnk");
 
 			Shortcut.Create(lnkFileName,
-				System.IO.Path.Combine(Shortcut.AppLocation, Shortcut.AppName),
+				Shortcut.AppLocationWithName,
 				null, null, "Open Notepad", "Ctrl+Shift+N", null);
  */
 
@@ -17,9 +17,7 @@ namespace HasselSoft.TrollHelpers
 {
 	public static class Shortcut
 	{
-		public static string AppLocation => AppDomain.CurrentDomain.BaseDirectory;
-		public static string AppName => $"{AppDomain.CurrentDomain.FriendlyName}.exe";
-
+		public static string AppLocationWithName => System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
 
 		private static Type m_type = Type.GetTypeFromProgID("WScript.Shell");
 		private static object m_shell = Activator.CreateInstance(m_type);
@@ -64,6 +62,6 @@ namespace HasselSoft.TrollHelpers
 			shortcut.Save();
 		}
 
-		public static void PermamentAutoStart() => File.Copy(Path.Combine(Shortcut.AppLocation, Shortcut.AppName), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), Path.GetFileName(Path.Combine(AppLocation, AppName))));
+		public static void PermamentAutoStart() => File.Copy(AppLocationWithName, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), Path.GetFileName(AppLocationWithName)));
 	}
 }
