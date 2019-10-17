@@ -34,6 +34,12 @@ namespace HasselSoft
 			//		Wallpaper.Set(new Uri("https://i.imgur.com/LRD7LMG.jpg"), Wallpaper.Style.Centered, "boskidawid", ImageFormat.Bmp);
 			//};
 
+			Keyboard.OnEscapePress += (sender, e) =>
+			{
+				Keyboard.RemoveHook();
+				Mouse.RemoveHook();
+			};
+
 			Console.WriteLine(Keyboard.SetHook() != default ? "Hooked keyboard" : "Couldn't hook keyboard");
 
 			Console.WriteLine(Mouse.SetHook() != default ? "Hooked mouse" : "Couldn't hook mouse");
