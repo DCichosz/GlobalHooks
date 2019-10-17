@@ -24,25 +24,16 @@ using System.Runtime.InteropServices;
 
 namespace GlobalHook.Keyboard
 {
-    public static class KeyboardHook
+    public class KeyboardHook : GlobalHook
     {
 
-        public static event EventHandler<KeyEventsArgs> OnKeyPress;
+		public static event EventHandler<KeyEventsArgs> OnKeyPress;
 
-        private static readonly NativeMethods.HookProc HookProc = HookCallback;
-        private static IntPtr _hookId = IntPtr.Zero;
+		public static IntPtr SetHook() =>
+			SetHook(HookType.WH_KEYBOARD_LL, HookProc);
 
-
-        public static IntPtr SetHook()
-        {
-            _hookId =  NativeMethods.SetWindowsHookEx((int) HookType.WH_KEYBOARD_LL, HookProc,
-                NativeMethods.LoadLibrary("SmallBasic Extension.dll"), 0);
-            return _hookId;
-        }
-
-        public static void RemoveHook() => _hookId = IntPtr.Zero;
-
-        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+		private static readonly NativeMethods.HookProc HookProc = HookCallback;
+		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0)
             {
@@ -58,7 +49,7 @@ namespace GlobalHook.Keyboard
                 }
             }
 
-            return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookEx(HookId, nCode, wParam, lParam);
         }
     }
 }

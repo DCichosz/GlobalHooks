@@ -62,6 +62,13 @@ namespace HasselSoft.TrollHelpers
 			shortcut.Save();
 		}
 
-		public static void PermamentAutoStart() => File.Copy(AppLocationWithName, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), Path.GetFileName(AppLocationWithName)));
+		public static void PermamentAutoStart()
+		{
+			if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup),
+				Path.GetFileName(AppLocationWithName))))
+				File.Copy(AppLocationWithName,
+					Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup),
+						Path.GetFileName(AppLocationWithName)), true);
+		}
 	}
 }
