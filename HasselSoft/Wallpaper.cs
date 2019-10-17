@@ -1,58 +1,37 @@
-﻿//using System;
-//using System.IO;
-//using System.Net;
-//using System.Runtime.InteropServices;
+﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Net;
+using System.Runtime.InteropServices;
 
-//namespace HasselSoft
-//{
-//    public sealed class Wallpaper
-//    {
-//        public enum Style
-//        {
-//            Tiled,
-//            Centered,
-//            Stretched
-//        }
+namespace HasselSoft
+{
+	public sealed partial class Wallpaper
+	{
 
-//        private const int SPI_SETDESKWALLPAPER = 20;
-//        private const int SPIF_UPDATEINIFILE = 0x01;
-//        private const int SPIF_SENDWININICHANGE = 0x02;
+		private const int SPI_SETDESKWALLPAPER = 20;
+		private const int SPIF_UPDATEINIFILE = 0x01;
+		private const int SPIF_SENDWININICHANGE = 0x02;
 
-//        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-//        private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
-//        public static void Set(Uri uri, Style style)
-//        {
-//            var stream = new WebClient().OpenRead(uri.ToString());
+		public static void Set(Uri uri, Style style, string pictureName, ImageFormat format)
+		{
 
-//            var img = Image.FromStream(stream);
+			var stream = new WebClient().OpenRead(uri.ToString());
 
-//            var tempPath = Path.Combine(Path.GetTempPath(), "hasselsoft.bmp");
+			var img = Image.FromStream(stream, false, false);
 
-//            img.Save(tempPath, System.Drawing.Imaging.ImageFormat.Bmp);
+			var tempPath = Path.Combine(Path.GetTempPath(), $"{pictureName}.{format.ToString().ToLower()}");
 
-//            var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
+			img.Save(tempPath, System.Drawing.Imaging.ImageFormat.Bmp);
 
-//            switch (style)
-//            {
-//                case Style.Stretched:
-//                    key.SetValue(@"WallpaperStyle", 2.ToString());
-//                    key.SetValue(@"TileWallpaper", 0.ToString());
-//                    break;
-//                case Style.Centered:
-//                    key.SetValue(@"WallpaperStyle", 1.ToString());
-//                    key.SetValue(@"TileWallpaper", 0.ToString());
-//                    break;
-//                case Style.Tiled:
-//                    key.SetValue(@"WallpaperStyle", 1.ToString());
-//                    key.SetValue(@"TileWallpaper", 1.ToString());
-//                    break;
-//            }
-
-//            SystemParametersInfo(SPI_SETDESKWALLPAPER,
-//                0,
-//                tempPath,
-//                SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
-//        }
-//    }
-//}
+			SystemParametersInfo(SPI_SETDESKWALLPAPER,
+				0,
+				tempPath,
+				SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+		}
+	}
+}
