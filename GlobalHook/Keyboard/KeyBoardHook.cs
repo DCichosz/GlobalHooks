@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace GlobalHook.Keyboard
@@ -23,32 +24,38 @@ namespace GlobalHook.Keyboard
     public static class KeyboardHook
     {
 
+        public static event EventHandler<KeyEventsArgs> OnKeyPress;
+
         private static readonly NativeMethods.HookProc HookProc = HookCallback;
-        private static readonly IntPtr HookId = IntPtr.Zero;
+        private static IntPtr _hookId = IntPtr.Zero;
 
 
-        private static int _keycode;
+        public static IntPtr SetHook()
+        {
+            _hookId =  NativeMethods.SetWindowsHookEx((int) HookType.WH_KEYBOARD_LL, HookProc,
+                NativeMethods.LoadLibrary("SmallBasic Extension.dll"), 0);
+            return _hookId;
+        }
 
-        public static bool SetHook() =>
-            NativeMethods.SetWindowsHookEx((int) HookType.WH_KEYBOARD_LL, HookProc,
-                NativeMethods.LoadLibrary("SmallBasic Extension.dll"), 0) != default;
+        public static void RemoveHook() => _hookId = IntPtr.Zero;
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0)
             {
-                if (wParam == (IntPtr) KeyboardMessage.WM_KEYDOWN)
+                switch ((KeyboardMessage)wParam)
                 {
-                    _keycode = Marshal.ReadInt32(lParam);
-                    Console.WriteLine(Enum.GetName(typeof(Keys), _keycode));
-                }
-                else if (wParam == (IntPtr) KeyboardMessage.WM_KEYUP)
-                {
-                    _keycode = -1;
+                    case KeyboardMessage.WM_KEYDOWN:
+                        OnKeyPress?.Invoke(null, new KeyEventsArgs
+                        {
+                            KeyCode = Marshal.ReadInt32(lParam),
+                            KeyState = KeyState.KeyDown
+                        });
+                        break;
                 }
             }
 
-            return NativeMethods.CallNextHookEx(HookId, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
         }
     }
 }

@@ -77,8 +77,9 @@ namespace GlobalHook
         ///     If the function succeeds, the return value is true.
         ///     If the function fails, the return value is false.
         /// </returns>
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -86,6 +87,15 @@ namespace GlobalHook
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        public static void StartListening()
+        {
+            while (!NativeMethods.GetMessage(out NativeMethods.MSG msg, IntPtr.Zero, 0, 0))
+            {
+                NativeMethods.TranslateMessage(ref msg);
+                NativeMethods.DispatchMessage(ref msg);
+            }
+        }
 
         [Serializable]
         public struct MSG
