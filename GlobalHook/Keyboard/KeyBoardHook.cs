@@ -29,8 +29,10 @@ namespace GlobalHook.Keyboard
 
 		public static event EventHandler<KeyEventsArgs> OnKeyPress;
 		public static event EventHandler<KeyEventsArgs> OnEscapePress;
+		public static event EventHandler<KeyEventsArgs> OnSpacePress; 
         public static event EventHandler<KeyEventsArgs> OnCPress;
-        public static event EventHandler<KeyEventsArgs> OnVPress; 
+        public static event EventHandler<KeyEventsArgs> OnVPress;
+        public static event EventHandler<KeyEventsArgs> OnBPress; 
 
 		public static IntPtr SetHook() =>
 			SetHook(HookType.WH_KEYBOARD_LL, HookProc);
@@ -57,10 +59,16 @@ namespace GlobalHook.Keyboard
                             case Keys.Escape:
                                 OnEscapePress?.Invoke(null, KeyEventsArgs);
                                 break;
-                            case Keys.V:
+                            case Keys.Space:
+	                            OnSpacePress?.Invoke(null, KeyEventsArgs);
+	                            break;
+							case Keys.V:
                                 OnVPress?.Invoke(null, KeyEventsArgs);
                                 break;
-                        }
+                            case Keys.B:
+	                            OnBPress?.Invoke(null, KeyEventsArgs);
+	                            break;
+						}
                         
                         
                         OnKeyPress?.Invoke(null, KeyEventsArgs);
