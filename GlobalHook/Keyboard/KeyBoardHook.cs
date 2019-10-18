@@ -34,6 +34,7 @@ namespace GlobalHook.Keyboard
 			SetHook(HookType.WH_KEYBOARD_LL, HookProc);
 
 		private static readonly NativeMethods.HookProc HookProc = HookCallback;
+        public static KeyEventsArgs KeyEventsArgs { get; set; }
 		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0)
@@ -41,22 +42,23 @@ namespace GlobalHook.Keyboard
                 switch ((KeyboardMessage)wParam)
                 {
                     case KeyboardMessage.WM_KEYDOWN:
-                        if (Enum.Parse<Keys>(Marshal.ReadInt32(lParam).ToString()) == Keys.Escape)
+                        KeyEventsArgs = new KeyEventsArgs
                         {
-                            OnEscapePress?.Invoke(null, new KeyEventsArgs
-                            {
-                                KeyCode = Marshal.ReadInt32(lParam),
-                                KeyState = KeyState.KeyDown,
-                            });
+                            KeyCode = Marshal.ReadInt32(lParam),
+                            KeyState = KeyState.KeyDown
+                        };
+
+                        if (KeyEventsArgs.Key == Keys.Escape)
+                        {
+                            OnEscapePress?.Invoke(null, KeyEventsArgs);
                             break;
                         }
 
-                        OnKeyPress?.Invoke(null, new KeyEventsArgs
-                        {
-                            KeyCode = Marshal.ReadInt32(lParam),
-                            KeyState = KeyState.KeyDown,
-                        });
+                        OnKeyPress?.Invoke(null, KeyEventsArgs);
                         break;
+                    case KeyboardMessage.WM_KEYUP:
+                        break;
+
                 }
             }
 

@@ -91,7 +91,9 @@ namespace GlobalHook
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
 
-		public static void StartListening()
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+        public static extern short GetKeyState(int keyCode);
+        public static void StartListening()
         {
             while (!NativeMethods.GetMessage(out MSG msg, IntPtr.Zero, 0, 0))
             {
