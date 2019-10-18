@@ -17,10 +17,10 @@ namespace HasselSoft.TrollHelpers
 {
 	public static class Shortcut
 	{
-		public static string AppLocationWithName => System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+		public static string AppLocationWithName => System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
 
-		private static Type m_type = Type.GetTypeFromProgID("WScript.Shell");
-		private static object m_shell = Activator.CreateInstance(m_type);
+		private static readonly Type MType = Type.GetTypeFromProgID("WScript.Shell");
+		private static readonly object MShell = Activator.CreateInstance(MType);
 
 		[ComImport, TypeLibType((short)0x1040), Guid("F935DC23-1CF0-11D0-ADB9-00C04FD58A0B")]
 		private interface IWshShortcut
@@ -51,7 +51,7 @@ namespace HasselSoft.TrollHelpers
 
 		public static void Create(string fileName, string targetPath, string arguments, string workingDirectory, string description, string hotkey, string iconPath)
 		{
-			IWshShortcut shortcut = (IWshShortcut)m_type.InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, m_shell, new object[] { fileName });
+			IWshShortcut shortcut = (IWshShortcut)MType.InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, MShell, new object[] { fileName });
 			shortcut.Description = description;
 			shortcut.Hotkey = hotkey;
 			shortcut.TargetPath = targetPath;

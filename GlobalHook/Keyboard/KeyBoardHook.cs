@@ -41,10 +41,20 @@ namespace GlobalHook.Keyboard
                 switch ((KeyboardMessage)wParam)
                 {
                     case KeyboardMessage.WM_KEYDOWN:
+                        if (Enum.Parse<Keys>(Marshal.ReadInt32(lParam).ToString()) == Keys.Escape)
+                        {
+                            OnEscapePress?.Invoke(null, new KeyEventsArgs
+                            {
+                                KeyCode = Marshal.ReadInt32(lParam),
+                                KeyState = KeyState.KeyDown,
+                            });
+                            break;
+                        }
+
                         OnKeyPress?.Invoke(null, new KeyEventsArgs
                         {
                             KeyCode = Marshal.ReadInt32(lParam),
-                            KeyState = KeyState.KeyDown
+                            KeyState = KeyState.KeyDown,
                         });
                         break;
                 }

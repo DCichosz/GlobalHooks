@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace GlobalHook.Mouse
 {
@@ -59,7 +60,6 @@ namespace GlobalHook.Mouse
 						break;
 				}
 			}
-
             return NativeMethods.CallNextHookEx(HookId, nCode, wParam, lParam);
 		}
 

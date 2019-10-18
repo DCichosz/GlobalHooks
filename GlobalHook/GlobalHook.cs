@@ -11,14 +11,13 @@ namespace GlobalHook
 		public static IntPtr SetHook(HookType hookType, NativeMethods.HookProc hookProc)
 		{
 			using (var curProcess = Process.GetCurrentProcess())
-			using (var curModule = curProcess.MainModule)
+            {
+                using var curModule = curProcess.MainModule;
+                HookId=NativeMethods.SetWindowsHookEx((int)hookType, hookProc,
+                    NativeMethods.GetModuleHandle(curModule?.ModuleName), 0);
+            }
 
-			{
-				HookId=NativeMethods.SetWindowsHookEx((int)hookType, hookProc,
-					NativeMethods.GetModuleHandle(curModule?.ModuleName), 0);
-			}
-
-			return HookId;
+            return HookId;
 			//NativeMethods.SetWindowsHookEx((int) hookType, hookProc,
 			//	NativeMethods.LoadLibrary("SmallBasic Extension.dll"), 0);
 		}
