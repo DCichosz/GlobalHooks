@@ -28,7 +28,9 @@ namespace GlobalHook.Keyboard
     {
 
 		public static event EventHandler<KeyEventsArgs> OnKeyPress;
-		public static event EventHandler<KeyEventsArgs> OnEscapePress; 
+		public static event EventHandler<KeyEventsArgs> OnEscapePress;
+        public static event EventHandler<KeyEventsArgs> OnCPress;
+        public static event EventHandler<KeyEventsArgs> OnVPress; 
 
 		public static IntPtr SetHook() =>
 			SetHook(HookType.WH_KEYBOARD_LL, HookProc);
@@ -47,13 +49,20 @@ namespace GlobalHook.Keyboard
                             KeyCode = Marshal.ReadInt32(lParam),
                             KeyState = KeyState.KeyDown
                         };
-
-                        if (KeyEventsArgs.Key == Keys.Escape)
+                        switch (KeyEventsArgs.Key)
                         {
-                            OnEscapePress?.Invoke(null, KeyEventsArgs);
-                            break;
+                            case Keys.C:
+                                OnCPress?.Invoke(null, KeyEventsArgs);
+                                break;
+                            case Keys.Escape:
+                                OnEscapePress?.Invoke(null, KeyEventsArgs);
+                                break;
+                            case Keys.V:
+                                OnVPress?.Invoke(null, KeyEventsArgs);
+                                break;
                         }
-
+                        
+                        
                         OnKeyPress?.Invoke(null, KeyEventsArgs);
                         break;
                     case KeyboardMessage.WM_KEYUP:

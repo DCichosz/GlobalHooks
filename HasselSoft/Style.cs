@@ -8,5 +8,5 @@
 			Centered,
 			Stretched
 		}
-	}
+    }
 }

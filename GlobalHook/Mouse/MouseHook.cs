@@ -11,7 +11,8 @@ namespace GlobalHook.Mouse
         public static event EventHandler<MouseEventsArgs> OnLeftButtonUp;
         public static event EventHandler<MouseEventsArgs> OnLeftDoubleClick;
 		public static event EventHandler<MouseEventsArgs> OnMouseMove;
-        public static event EventHandler<MouseEventsArgs> OnRightButtonUp; 
+        public static event EventHandler<MouseEventsArgs> OnRightButtonDown;
+        public static event EventHandler<MouseEventsArgs> OnRightButtonUp;
 
         public static IntPtr SetHook() =>
 	        SetHook(HookType.WH_MOUSE_LL, HookProc);
@@ -44,7 +45,14 @@ namespace GlobalHook.Mouse
 							DoubleClick = true
 						});
 						break;
-					case MouseMessage.WM_RBUTTONUP:
+                    case MouseMessage.WM_RBUTTONDOWN:
+                        OnRightButtonDown?.Invoke(null, new MouseEventsArgs
+                        {
+                            Button = MouseButtons.Right,
+                            State = MouseState.MouseUp
+                        });
+                        break;
+                    case MouseMessage.WM_RBUTTONUP:
 						OnRightButtonUp?.Invoke(null, new MouseEventsArgs
 						{
 							Button = MouseButtons.Right,
